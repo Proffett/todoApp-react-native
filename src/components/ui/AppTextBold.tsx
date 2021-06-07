@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { CSSProperties, ReactChildren } from 'react';
 import { StyleSheet, Text } from 'react-native';
 
-export const AppTextBold = (props) => (
+export type AppTextBoldType = {
+  style: any;
+  children: Element;
+};
+export const AppTextBold = (props: AppTextBoldType) => (
   <Text style={{ ...styles.default, ...props.style }}>{props.children}</Text>
 );
 

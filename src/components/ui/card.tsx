@@ -4,8 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { THEME } from '../../theme';
 
 type PropsAppCard = {
-  style: ReactChildren;
-  children: ReactChildren;
+  style: Element;
+  children: Element;
 };
 export const AppCard = (props: PropsAppCard) => {
   return <View style={{ ...styles.default, ...props.style }}>{props.children}</View>;

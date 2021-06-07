@@ -5,10 +5,17 @@ import { CHANGE_SCREEN } from '../types';
 import { ScreenContext } from './screenContext';
 import { screenReducer } from './screenReducer';
 
-export const ScreenState = ({ children }) => {
-  const [state, dispatch] = useReducer(screenReducer, null);
+type ScreenStateProps = {
+  children: Element;
+};
 
-  const changeScreen = (id) => dispatch({ type: CHANGE_SCREEN, payload: id });
+export const ScreenState = ({ children }: ScreenStateProps) => {
+  const [state, dispatch] = useReducer(screenReducer, 0, undefined);
+
+  const changeScreen = (id: string | null): string | null =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch({ type: CHANGE_SCREEN, payload: id });
 
   return (
     <ScreenContext.Provider

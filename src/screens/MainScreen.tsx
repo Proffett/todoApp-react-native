@@ -21,7 +21,10 @@ export const MainScreen: ElementType = () => {
   );
 
   // getting Todos from DB
-  const loadTodos = useCallback(async () => await fetchTodos(), [fetchTodos]);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const loadTodos = useCallback((): void => fetchTodos(), [fetchTodos]);
+
   useEffect(() => {
     loadTodos();
   }, []);
@@ -51,7 +54,7 @@ export const MainScreen: ElementType = () => {
   let content = (
     <View style={{ width: deviceWidth }}>
       <FlatList
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item: { id: string }) => item.id.toString()}
         data={todos}
         renderItem={({ item }) => (
           <Todo todo={item} onRemoveTodo={removeTodo} onOpen={changeScreen} />

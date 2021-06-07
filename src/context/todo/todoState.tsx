@@ -1,4 +1,4 @@
-import React, { useContext, useReducer } from 'react';
+import React, { Dispatch, ReducerAction, useContext, useReducer } from 'react';
 import { Alert } from 'react-native';
 
 import { Http } from '../../http';
@@ -15,17 +15,23 @@ import {
 } from '../types';
 
 import { TodoContext } from './todoContext';
-import { TodoReducer } from './TOdoReducer';
+import { TodoReducer } from './todoReducer';
 
-export interface initialState {
+export interface initialStateType {
   todos: [];
   loading: false;
   error: null;
 }
 
-export const TodoState = ({ children }): JSX.Element => {
-  const initialState: initialState = {
+interface TooStateProps {
+  children: Element;
+}
+
+export const TodoState = ({ children }: TooStateProps): JSX.Element => {
+  const initialState: initialStateType = {
     todos: [],
+    loading: false,
+    error: null,
   };
   const [state, dispatch] = useReducer(TodoReducer, initialState);
   const { changeScreen } = useContext(ScreenContext);
@@ -37,24 +43,16 @@ export const TodoState = ({ children }): JSX.Element => {
         'https://todoapp-udemy-default-rtdb.europe-west1.firebasedatabase.app/todos.json',
         { title },
       );
+
       dispatch({ type: ADD_TODO, title, id: data.name });
     } catch (e) {
       showError('что-то пошло не так');
     }
-    // const response = await fetch(
-    //   'https://todoapp-udemy-default-rtdb.europe-west1.firebasedatabase.app/todos.json',
-    //   {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ title }),
-    //   },
-    // );
-    // const data = await response.json();
   };
 
   const removeTodo = (id: string) => {
     clearError();
-    const todo = state.todos.find((t) => t.id === id);
+    const todo = state.todos.find((t: { id: string }) => t.id === id);
     Alert.alert(
       'Удаление задачи',
       `Удалить "${todo?.title}"?`,
@@ -103,20 +101,20 @@ export const TodoState = ({ children }): JSX.Element => {
 
   const updateTodo = async (id: string, title: string) => {
     clearError();
+
     try {
       await Http.patch(
         `https://todoapp-udemy-default-rtdb.europe-west1.firebasedatabase.app/todos/${id}.json`,
+        { title },
       );
-      dispatch({ type: UPDATE_TODO, id, title });
+      dispatch({ type: UPDATE_TODO, title, id });
     } catch (e) {
-      console.log(e);
-      showError('что-то пошло не так');
+      showError(`что-то пошло не так`);
     }
   };
 
   const showLoader = () => dispatch({ type: SHOW_LOADER });
   const hideLoader = () => dispatch({ type: HIDE_LOADER });
-
   const showError = (error: string) => dispatch({ type: SHOW_ERROR, error });
   const clearError = () => dispatch({ type: CLEAR_ERROR });
 

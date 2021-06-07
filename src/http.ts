@@ -1,59 +1,59 @@
+export type DataType = {
+  title?: string;
+  id?: string;
+  name?: string;
+};
+
 export class Http {
   static HEADERS = { 'Content-Type': 'application/json' };
 
-  static async get(url: string) {
+  static async get(url: string): Promise<Request> {
     try {
       return await request(url, 'GET');
     } catch (e) {
       console.log(e);
       throw e;
     }
-    return null;
   }
 
-  static async post(url: string, data = {}) {
+  static async post(url: string, data: DataType): Promise<Request> {
     try {
       return await request(url, 'POST', data);
     } catch (e) {
       console.log(e);
       throw e;
     }
-    return null;
   }
 
-  static async delete(url: string) {
+  static async delete(url: string): Promise<Request> {
     try {
       return await request(url, 'DELETE');
     } catch (e) {
       console.log(e);
       throw e;
     }
-    return null;
   }
 
-  static async patch(url: string, data = {}) {
+  static async patch(url: string, data: DataType): Promise<Request> {
     try {
       return await request(url, 'PATCH', data);
     } catch (e) {
       console.log(e);
       throw e;
     }
-    return null;
   }
 }
 
-async function request(url: string, method = 'GET', data = null) {
-  const config = {
+async function request(url: string, method = 'GET', data: DataType | null = null) {
+  const config: Partial<RequestInit> & { Headers: HeadersInit_ } = {
     method,
     Headers: Http.HEADERS,
+    body: null,
   };
   if (method === 'POST' || method === 'PATCH') {
     config.body = JSON.stringify(data);
   }
-  await fetch(url, {
-    method,
-    headers: Http.HEADERS,
-  });
+
   const response = await fetch(url, config);
-  return await response.json();
+  return response.json();
 }

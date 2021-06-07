@@ -1,8 +1,7 @@
 import { createContext } from 'react';
-import { PromiseTask } from 'react-native';
 
-export type ContextProps = {
-  todos?: [] | undefined;
+export type TodoContextProps = {
+  todos: [];
   loading: boolean;
   error: null | boolean;
   addTodo: (title: string) => void;
@@ -11,4 +10,4 @@ export type ContextProps = {
   fetchTodos: () => void;
 };
 
-export const TodoContext = createContext(<Partial<ContextProps>>[]);
+export const TodoContext = createContext(<Partial<TodoContextProps>>[]);

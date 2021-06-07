@@ -1,3 +1,8 @@
 import React from 'react';
 
-export const ScreenContext = React.createContext();
+const defaultValue = {
+  todoId: {},
+  changeScreen: (id: string | null) => id || null,
+};
+
+export const ScreenContext = React.createContext(defaultValue);

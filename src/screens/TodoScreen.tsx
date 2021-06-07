@@ -7,18 +7,27 @@ import { AppButton } from '../components/ui/AppButton';
 import { AppTextBold } from '../components/ui/AppTextBold';
 import { AppCard } from '../components/ui/card';
 import { ScreenContext } from '../context/screen/screenContext';
-import { TodoContext } from '../context/todo/todoContext';
+import { TodoContext, TodoContextProps } from '../context/todo/todoContext';
 import { THEME } from '../theme';
 
+export type TodoType = {
+  title: string;
+  id: string;
+};
+
 export const TodoScreen = () => {
-  const { todos, updateTodo, removeTodo } = useContext(TodoContext);
+  const { todos, updateTodo, removeTodo }: Partial<TodoContextProps> = useContext(TodoContext);
   const { todoId, changeScreen } = useContext(ScreenContext);
   const [modal, setModal] = useState(false);
 
-  const todo = todos.find((t) => t.id === todoId);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const todo: TodoType = todos?.find((t: { id: string }): boolean => t.id === todoId);
 
   const saveHandler = async (title: string) => {
-    await updateTodo(todo.id, title);
+    if (updateTodo) {
+      await updateTodo(todo.id, title);
+    }
     setModal(false);
   };
 
@@ -33,7 +42,7 @@ export const TodoScreen = () => {
       <AppCard style={styles.card}>
         <AppTextBold style={styles.title}>{todo.title}</AppTextBold>
         <AppButton onPress={() => setModal(true)}>
-          <FontAwesome name="edit" size={20} />
+          <FontAwesome name="edit" size={15} />
         </AppButton>
       </AppCard>
 
@@ -44,7 +53,11 @@ export const TodoScreen = () => {
           </AppButton>
         </View>
         <View style={styles.button}>
-          <AppButton color={THEME.DANGER_COLOR} onPress={() => removeTodo(todo.id)}>
+          <AppButton
+            color={THEME.DANGER_COLOR}
+            /* eslint-disable-next-line no-confusing-arrow */
+            onPress={() => (removeTodo ? removeTodo(todo.id) : null)}
+          >
             <FontAwesome name="remove" size={20} color="#fff" />
           </AppButton>
         </View>

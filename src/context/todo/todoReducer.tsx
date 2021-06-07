@@ -2,7 +2,6 @@ import {
   ADD_TODO,
   CLEAR_ERROR,
   FETCH_TODOS,
-  HIDE_ERROR,
   HIDE_LOADER,
   REMOVE_TODO,
   SHOW_ERROR,
@@ -10,7 +9,14 @@ import {
   UPDATE_TODO,
 } from '../types';
 
-const handlers = {
+type HandlersType = {
+  [action: string]: (
+    state: { todos: { id: string; title: string }[] },
+    todos: { title: string; id: string; error?: string; todos: { id: string; title: string }[] },
+  ) => typeof state;
+};
+
+const handlers: HandlersType = {
   [ADD_TODO]: (state, { title, id }) => ({
     ...state,
     todos: [
@@ -21,6 +27,7 @@ const handlers = {
       },
     ],
   }),
+
   [REMOVE_TODO]: (state, { id }) => ({
     ...state,
     todos: state.todos.filter((todo: { id: string; title: string }) => todo.id !== id),
@@ -35,15 +42,20 @@ const handlers = {
       return todo;
     }),
   }),
+
   [SHOW_LOADER]: (state) => ({ ...state, loading: true }),
   [HIDE_LOADER]: (state) => ({ ...state, loading: false }),
   [CLEAR_ERROR]: (state) => ({ ...state, error: null }),
   [SHOW_ERROR]: (state, { error }) => ({ ...state, error }),
   [FETCH_TODOS]: (state, { todos }) => ({ ...state, todos }),
+
   DEFAULT: (state) => state,
 };
 
-export const TodoReducer = (state, action) => {
+export const TodoReducer = (
+  state: never,
+  action: { id: string; title: string; type: string; todos: { id: string; title: string }[] },
+) => {
   const handler = handlers[action.type] || handlers.DEFAULT;
   return handler(state, action);
 };
